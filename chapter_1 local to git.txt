@@ -1,3 +1,5 @@
+git remote add origin REMOTE_URL
+
 git checkout -b chapter_1
 
 git status
