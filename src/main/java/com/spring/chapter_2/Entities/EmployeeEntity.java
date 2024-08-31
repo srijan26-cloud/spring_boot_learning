@@ -15,36 +15,36 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="employee")
+@Table(name="employeeTable")
 public class EmployeeEntity {
 	
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
-	private Long EmployeeId;
+	private Long employeeId;
 	
-	private String EmployeeName;
+	private String employeeName;
 	
 	
 
 	public Long getEmployeeId() {
-		return EmployeeId;
+		return employeeId;
 	}
 
 	public void setEmployeeId(Long employeeId) {
-		EmployeeId = employeeId;
+		this.employeeId = employeeId;
 	}
 
 	public String getEmployeeName() {
-		return EmployeeName;
+		return employeeName;
 	}
 
 	public void setEmployeeName(String employeeName) {
-		EmployeeName = employeeName;
+		this.employeeName = employeeName;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(EmployeeId, EmployeeName);
+		return Objects.hash(employeeId, employeeName);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class EmployeeEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		EmployeeEntity other = (EmployeeEntity) obj;
-		return Objects.equals(EmployeeId, other.EmployeeId) && Objects.equals(EmployeeName, other.EmployeeName);
+		return Objects.equals(employeeId, other.employeeId) && Objects.equals(employeeName, other.employeeName);
 	}
 	
 }
