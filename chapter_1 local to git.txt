@@ -1,6 +1,6 @@
 git remote add origin REMOTE_URL
 
-git checkout -b chapter_1
+git checkout -b chapter_1.1
 
 git status
 
@@ -8,4 +8,4 @@ git add .
 
 git commit -m "structure of spring app"
 
-git push -u origin chapter_1
+git push -u origin chapter_1.1
