@@ -13,10 +13,10 @@ import jakarta.validation.Valid;
 
 public interface IEmployeeService {
 
-	Optional<EmployeeDTO> getEmployeeById(Long Id);
+	EmployeeDTO getEmployeeById(Long Id);
 	List<EmployeeDTO> getAllEmployees();
 	EmployeeDTO createNewEmployee(EmployeeDTO employeeDto);
-	Optional<EmployeeDTO> updateEmployeeDetails(Long id, @Valid EmployeeDTO employeeDto);
+	EmployeeDTO updateEmployeeDetails(Long id, @Valid EmployeeDTO employeeDto);
 	boolean deleteEmployeeById(Long id);
 	EmployeeDTO updatePartialEmployeeById(Long id, Map<String, Object> updates);
 	

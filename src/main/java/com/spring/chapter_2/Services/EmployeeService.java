@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.chapter_2.DataTransferObject.EmployeeDTO;
 import com.spring.chapter_2.Entities.EmployeeEntity;
+import com.spring.chapter_2.Exceptions.ResourceNotFoundException;
 import com.spring.chapter_2.IServices.IEmployeeService;
 import com.spring.chapter_2.Repositories.EmployeeRepository;
 
@@ -29,15 +30,13 @@ public class EmployeeService implements IEmployeeService{
 //		System.out.println("EmployeeService init");
 	}
 	
-	private boolean employeeExists(Long Id) {
-		return employeeRepository.existsById(Id);
-	}
 	@Override
-	public Optional<EmployeeDTO> getEmployeeById(Long Id) {
+	public EmployeeDTO getEmployeeById(Long Id) {
 		// TODO Auto-generated method stub
-		if (employeeExists(Id))
-			return employeeRepository.findById(Id).map(employeeEntity -> modelMapper.map(employeeEntity, EmployeeDTO.class));
-		return Optional.empty();
+		employeeExists(Id);
+		//return employeeRepository.findById(Id).map(employeeEntity -> modelMapper.map(employeeEntity, EmployeeDTO.class));
+		EmployeeEntity employeeEntity = employeeRepository.findById(Id).get();
+		return modelMapper.map(employeeEntity, EmployeeDTO.class);
 	}   
 
 	@Override
@@ -52,7 +51,7 @@ public class EmployeeService implements IEmployeeService{
 	}
 
 	@Override
-	public EmployeeDTO createNewEmployee(EmployeeDTO employeeDto) {
+	public EmployeeDTO createNewEmployee(@Valid EmployeeDTO employeeDto) {
 		// TODO Auto-generated method stub
 		EmployeeEntity toSaveEmployeeEntity = modelMapper.map(employeeDto, EmployeeEntity.class);
 		EmployeeEntity savedEmployeeEntity = employeeRepository.save(toSaveEmployeeEntity);
@@ -60,23 +59,19 @@ public class EmployeeService implements IEmployeeService{
 	}
 
 	@Override
-	public Optional<EmployeeDTO> updateEmployeeDetails(Long id, @Valid EmployeeDTO employeeDto) {
+	public EmployeeDTO updateEmployeeDetails(Long id, @Valid EmployeeDTO employeeDto) {
 		// TODO Auto-generated method stub
-		if(employeeExists(id))
-		{
-			EmployeeEntity toUpdateEmployeeEntity = modelMapper.map(employeeDto, EmployeeEntity.class);
-			toUpdateEmployeeEntity.setEmployeeId(id);
-			EmployeeEntity savedEmployeeEntity = employeeRepository.save(toUpdateEmployeeEntity);
-			return Optional.ofNullable(modelMapper.map(savedEmployeeEntity, EmployeeDTO.class));
-		}
-		return Optional.empty();
+		employeeExists(id);
+		EmployeeEntity toUpdateEmployeeEntity = modelMapper.map(employeeDto, EmployeeEntity.class);
+		toUpdateEmployeeEntity.setEmployeeId(id);
+		EmployeeEntity savedEmployeeEntity = employeeRepository.save(toUpdateEmployeeEntity);
+		return modelMapper.map(savedEmployeeEntity, EmployeeDTO.class);
 	}
 
 	@Override
 	public boolean deleteEmployeeById(Long id) {
 		// TODO Auto-generated method stub
-		if(!employeeExists(id))
-			return false;
+		employeeExists(id);
 		employeeRepository.deleteById(id);
 		return true;
 	}
@@ -84,16 +79,20 @@ public class EmployeeService implements IEmployeeService{
 	@Override
 	public EmployeeDTO updatePartialEmployeeById(Long id, Map<String, Object> updates) {
 		// TODO Auto-generated method stub
+		employeeExists(id);
 		EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
-			updates.forEach((field , value) -> {
-				//field = Character.toTitleCase(field.charAt(0)) + field.substring(1);
-				Field fieldToUpdate = ReflectionUtils.findRequiredField(EmployeeEntity.class, field);
-				fieldToUpdate.setAccessible(true);
-				ReflectionUtils.setField(fieldToUpdate, employeeEntity, value);
-			});
+		updates.forEach((field , value) -> {
+			//field = Character.toTitleCase(field.charAt(0)) + field.substring(1);
+			Field fieldToUpdate = ReflectionUtils.findRequiredField(EmployeeEntity.class, field);
+			fieldToUpdate.setAccessible(true);
+			ReflectionUtils.setField(fieldToUpdate, employeeEntity, value);
+		});
 		return modelMapper.map(employeeRepository.save(employeeEntity), EmployeeDTO.class);
 	}
 	
-	
+	private void employeeExists(Long Id) {
+		boolean exists =  employeeRepository.existsById(Id);
+		if(!exists) throw new ResourceNotFoundException("Employee not found with Id : "+ Id);
+	}
 
 }
