@@ -1,6 +1,8 @@
 package com.jpatut.jpatutorial.Repositories;
 
 import com.jpatut.jpatutorial.Entities.ProductEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -34,4 +36,10 @@ public interface ProductRepository extends JpaRepository<ProductEntity,Long> {
     //@Query("select e from ProductEntity e where e.productName=?1 and e.productQuantity=?2")  also fine
     @Query("select e from ProductEntity e where e.productName=:name and e.productQuantity=:quantity")
     Optional<ProductEntity> findByProductNameAndProductQuantity(String name, Integer quantity);
+
+    List<ProductEntity> findByProductNameContainingIgnoreCaseOrderByProductPriceDesc(String pepsi);
+
+    List<ProductEntity> findByOrderByProductPriceDesc();
+
+    List<ProductEntity> findByProductQuantity(Integer productQuantity, Pageable pageable);
 }
