@@ -24,6 +24,7 @@ public class DepartmentController {
         return departmentService.getDepartmentById(id);
     }
 
+    //OneToOne (One Employee -> One Department)
     @PutMapping(path = "/{departmentId}/manager/{employeeId}")
     public DepartmentEntity assignManagerToDepartment(@PathVariable Long departmentId,
                                                       @PathVariable Long employeeId){
@@ -39,10 +40,17 @@ public class DepartmentController {
     public DepartmentEntity getAssignedDepartmentOfManager2(@PathVariable Long employeeId){
         return departmentService.getAssignedDepartmentOfManager2(employeeId);
     }
-
+    //ManyToOne (Many Employees -> One Department)
     @PutMapping(path = "/{departmentId}/worker/{employeeId}")
     public DepartmentEntity assignWorkerToDepartment(@PathVariable Long departmentId,
                                                       @PathVariable Long employeeId){
         return departmentService.assignWorkerToDepartment(departmentId,employeeId);
+    }
+
+    //ManyToMany (Many Employees -> Many Departments)
+    @PutMapping(path = "/{departmentId}/freelancer/{employeeId}")
+    public DepartmentEntity assignFreelancerToDepartment(@PathVariable Long departmentId,
+                                                     @PathVariable Long employeeId){
+        return departmentService.assignFreelancerToDepartment(departmentId,employeeId);
     }
 }

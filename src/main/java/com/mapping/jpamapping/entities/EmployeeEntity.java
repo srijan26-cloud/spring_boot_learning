@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,9 +27,22 @@ public class EmployeeEntity {
     private DepartmentEntity managedDepartment;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "worker_Department_id" , referencedColumnName = "id")
+    //@JoinColumn(name = "worker_Department_id" , referencedColumnName = "id")
+    @JoinTable(name = "worker_Department_Mapping",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "department_id")
+    )
     @JsonIgnore
     private DepartmentEntity workerDepartment;
+
+    @ManyToMany
+    @JoinTable(
+            name = "freelancer_department_mapping",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "department_id")
+    )
+    @JsonIgnore
+    private Set<DepartmentEntity> freelanceDepartments;
 
     @Override
     public boolean equals(Object o) {
