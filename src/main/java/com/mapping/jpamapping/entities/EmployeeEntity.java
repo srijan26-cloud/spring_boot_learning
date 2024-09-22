@@ -2,13 +2,13 @@ package com.mapping.jpamapping.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +24,21 @@ public class EmployeeEntity {
     @OneToOne(mappedBy = "manager")
     @JsonIgnore
     private DepartmentEntity managedDepartment;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "worker_Department_id" , referencedColumnName = "id")
+    @JsonIgnore
+    private DepartmentEntity workerDepartment;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EmployeeEntity that)) return false;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName());
+    }
 }
