@@ -1,0 +1,35 @@
+<configuration>
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>15MB</totalSizeCap>
+            <maxFileSize>15MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="ROLLING" />
+    </root>
+</configuration>
+<!--
+        RollingFileAppender: This appender writes log messages to a file and rolls over when certain conditions are met.
+
+        file: Specifies the log file name.
+
+        TimeBasedRollingPolicy: This policy allows rolling based on time and file index.
+
+        fileNamePattern: Determines the pattern for the rolled log files (date-based and indexed).
+
+        maxHistory: Retains the last 30 log files, deleting older ones.
+
+        totalSizeCap: Limits the total size of the log files.
+
+        maxFileSize: Sets the maximum size for each log file.
+
+        encoder: Defines the log message form
+ -->

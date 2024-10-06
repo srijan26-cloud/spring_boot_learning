@@ -5,6 +5,8 @@ import com.chapter_5.third.party.rest.API.Exceptions.ResourceNotFoundException;
 import com.chapter_5.third.party.rest.API.clients.EmployeeClient;
 import com.chapter_5.third.party.rest.API.dto.EmployeeDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -19,16 +21,27 @@ public class EmployeeClientImpl implements EmployeeClient {
 
     private final RestClient restClient;
 
+    Logger log = LoggerFactory.getLogger(EmployeeClientImpl.class);
+
     @Override
     public List<EmployeeDTO> getEmployees() {
+        log.debug("getEmployee fn triggered");
         try{
+            log.debug("Attempting to use restClient inside getEmployees");
             ApiResponse<List<EmployeeDTO>> employeeDTO = restClient
                     .get()
                     .uri("")
                     .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+                        log.error(new String(res.getBody().readAllBytes()));
+                        throw new ResourceNotFoundException("Client side error");
+                    })
                     .body(new ParameterizedTypeReference<>() {});
+            log.debug("successful in fetching the data");
+            log.trace("Found data : {}", employeeDTO.getData());
             return employeeDTO.getData();
         } catch(Exception e){
+            log.error("Cannot fetch Server not running");
             throw new RuntimeException(e);
         }
 
